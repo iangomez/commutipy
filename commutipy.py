@@ -34,7 +34,34 @@ def delete_all_tracks(tracks):
 	for i, item in enumerate(tracks['items']):
 		track = item['track']
 		track_ids.append(track['id'])
-	results = sp.user_playlist_remove_all_occurrences_of_tracks(username, playlist_id, track_ids)
+	results = sp.user_playlist_remove_all_occurrences_of_tracks(username,
+				playlist_id, track_ids)
+
+def get_artist(name):
+    results = sp.search(q='artist:' + name, type='artist')
+    items = results['artists']['items']
+    if len(items) > 0:
+        return items[0]
+    else:
+        return None
+
+def show_artist_albums(artist):
+    albums = []
+    results = sp.artist_albums(artist['id'], album_type='album')
+    albums.extend(results['items'])
+    while results['next']:
+        results = sp.next(results)
+        albums.extend(results['items'])
+    seen = set() # to avoid dups
+    albums.sort(key=lambda album:album['name'].lower())
+    for album in albums:
+        name = album['name']
+        if name not in seen:
+            print((' ' + name))
+            seen.add(name)
+
+# IF album is in list, add store and lookup album object
+# iterate through album for song ids and place in playlist
 
 ################################################################################
 # Application																   #
@@ -43,13 +70,20 @@ def delete_all_tracks(tracks):
 # open list and read
 # randomly select an album from a list
 # search spotify to populate track ids
-track_ids = ['2WGzDLofKXzEUV2cksDk1l']
-playlist_id = '5FGOMBsm77sM3WjpdJeD1Z'
+result = sp.search('aha shake heartbreak')
 
-# add the songs to the playlist in proper order
-results = sp.user_playlist_add_tracks(username, playlist_id, track_ids)
+name = 'Radiohead'
+artist = get_artist(name)
+if artist:
+    show_artist_albums(artist)
+else:
+    print("Can't find that artist")
 
-# delete all tracks
-results = sp.user_playlist(username, playlist_id=playlist_id)
-tracks = results['tracks']
-delete_all_tracks(tracks)
+track_ids = []
+
+# # delete all current tracks and add new album to playlist
+# playlist_id = '5FGOMBsm77sM3WjpdJeD1Z'
+# results = sp.user_playlist(username, playlist_id=playlist_id)
+# tracks = results['tracks']
+# delete_all_tracks(tracks)
+# results = sp.user_playlist_add_tracks(username, playlist_id, track_ids)
