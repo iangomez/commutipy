@@ -6,6 +6,10 @@ import spotipy
 import spotipy.util as util
 import keys
 
+################################################################################
+# Setup Spotify API															   #
+################################################################################
+
 username = keys.username
 scope = 'playlist-modify-public'
 token = util.prompt_for_user_token(username, scope,
@@ -15,7 +19,10 @@ token = util.prompt_for_user_token(username, scope,
 sp = spotipy.Spotify(auth=token)
 sp.trace = False
 
-# Helper Functions
+################################################################################
+# Helper Functions															   #
+################################################################################
+
 def show_tracks(tracks):
     for i, item in enumerate(tracks['items']):
         track = item['track']
@@ -28,6 +35,10 @@ def delete_all_tracks(tracks):
 		track = item['track']
 		track_ids.append(track['id'])
 	results = sp.user_playlist_remove_all_occurrences_of_tracks(username, playlist_id, track_ids)
+
+################################################################################
+# Application																   #
+################################################################################
 
 # open list and read
 # randomly select an album from a list
