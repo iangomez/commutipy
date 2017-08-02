@@ -1,41 +1,43 @@
 # Commutipy
 # Ian Gomez, 08/02/17
 
-import sys
 import spotipy
 import spotipy.util as util
 import keys
 
-################################################################################
-# Setup Spotify API															   #
-################################################################################
+###############################################################################
+# Setup Spotify                                                               #
+###############################################################################
 
 username = keys.username
 scope = 'playlist-modify-public'
 token = util.prompt_for_user_token(username, scope,
-	client_id=keys.client_id,
-	client_secret=keys.client_secret,
-	redirect_uri=keys.redirect_uri)
+                                   client_id=keys.client_id,
+                                   client_secret=keys.client_secret,
+                                   redirect_uri=keys.redirect_uri)
 sp = spotipy.Spotify(auth=token)
 sp.trace = False
 
-################################################################################
-# Helper Functions															   #
-################################################################################
+###############################################################################
+# Helper Functions                                                            #
+###############################################################################
+
 
 def show_tracks(tracks):
     for i, item in enumerate(tracks['items']):
         track = item['track']
         print("%d %32.32s, %s" % (i, track['artists'][0]['name'],
-            track['name']))
+                                  track['name']))
 
-def delete_all_tracks(tracks):
-	track_ids = []
-	for i, item in enumerate(tracks['items']):
-		track = item['track']
-		track_ids.append(track['id'])
-	results = sp.user_playlist_remove_all_occurrences_of_tracks(username,
-				playlist_id, track_ids)
+
+def delete_all_tracks(username, playlist_id, tracks):
+    track_ids = []
+    for item in tracks['items']:
+        track = item['track']
+        track_ids.append(track['id'])
+    sp.user_playlist_remove_all_occurrences_of_tracks(username,
+                                                      playlist_id, track_ids)
+
 
 def get_artist(name):
     results = sp.search(q='artist:' + name, type='artist')
@@ -45,45 +47,50 @@ def get_artist(name):
     else:
         return None
 
-def show_artist_albums(artist):
+
+def get_album(artist, album_title):
     albums = []
     results = sp.artist_albums(artist['id'], album_type='album')
-    albums.extend(results['items'])
-    while results['next']:
-        results = sp.next(results)
+    for album in results:
         albums.extend(results['items'])
-    seen = set() # to avoid dups
-    albums.sort(key=lambda album:album['name'].lower())
+    seen = set()  # to avoid dups
+    albums.sort(key=lambda album: album['name'].lower())
     for album in albums:
         name = album['name']
         if name not in seen:
-            print((' ' + name))
             seen.add(name)
+            if album_title.lower() == name.lower():
+                album_id = album['id']
+                return sp.album(album_id)
+    return None
 
-# IF album is in list, add store and lookup album object
-# iterate through album for song ids and place in playlist
 
-################################################################################
-# Application																   #
-################################################################################
+def get_track_ids(album):
+    track_ids = []
+    for item in album['tracks']['items']:
+        track_ids.append(item['id'])
+    return track_ids
+
+
+def repopulate_playlist(username, playlist_id, track_ids):
+    playlist = sp.user_playlist(username, playlist_id=playlist_id)
+    tracks = playlist['tracks']
+    delete_all_tracks(username, playlist_id, tracks)
+    sp.user_playlist_add_tracks(username, playlist_id, track_ids)
+
+
+###############################################################################
+# Application                                                                 #
+###############################################################################
 
 # open list and read
 # randomly select an album from a list
-# search spotify to populate track ids
-result = sp.search('aha shake heartbreak')
 
+playlist_id = '5FGOMBsm77sM3WjpdJeD1Z'
 name = 'Radiohead'
+album_title = 'In Rainbows'
+
 artist = get_artist(name)
-if artist:
-    show_artist_albums(artist)
-else:
-    print("Can't find that artist")
-
-track_ids = []
-
-# # delete all current tracks and add new album to playlist
-# playlist_id = '5FGOMBsm77sM3WjpdJeD1Z'
-# results = sp.user_playlist(username, playlist_id=playlist_id)
-# tracks = results['tracks']
-# delete_all_tracks(tracks)
-# results = sp.user_playlist_add_tracks(username, playlist_id, track_ids)
+album = get_album(artist, album_title)
+track_ids = get_track_ids(album)
+repopulate_playlist(username, playlist_id, track_ids)
