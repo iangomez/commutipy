@@ -4,9 +4,9 @@
 
 import spotipy
 import spotipy.util as util
-import random
 import keys
 import csv
+import random
 from pushbullet import Pushbullet
 pb = Pushbullet(keys.pbapi)
 
@@ -81,27 +81,44 @@ def repopulate_playlist(username, playlist_id, track_ids):
 def to_bool(arg):
     return int(arg) == 1
 
+
+def read_csv(txtdir):
+    artists = []; albums = []; heard = []
+    with open(txtdir, newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        next(reader)  # skip first line
+        for row in reader:
+            artists.append(row[0])
+            albums.append(row[1])
+            heard.append(row[2])
+    return artists, albums, heard
+
+
+def pick_rand(artists, albums, heard):
+    r = random.randrange(len(artists))
+    while(to_bool(heard[r])):
+        r = random.randrange(len(artists))
+    artist_name = artists[r].strip()
+    album_title = albums[r].strip()
+    record_listened(r)
+    return artist_name, album_title
+
+
+def record_listened(r):
+    # use the random number to write to the csv that we listened to the album
+    # or use last.fm to confirm that we listened to the whole album before
+    # changing it to a new one
+    print('?')
+
 ###############################################################################
 # Application                                                                 #
 ###############################################################################
 
 txtdir = 'C:\\Users\\ME123\\Dropbox\\Python\\commutipy\\albums.txt'
-artists = []; albums = []; heard = []
-with open(txtdir, newline='') as csvfile:
-    reader = csv.reader(csvfile, delimiter=',')
-    next(reader)  # skip first line
-    for row in reader:
-        artists.append(row[0])
-        albums.append(row[1])
-        heard.append(row[2])
-
-r = random.randrange(len(artists))
-while(to_bool(heard[r])):
-    r = random.randrange(len(artists))
-
 playlist_id = '5FGOMBsm77sM3WjpdJeD1Z'
-artist_name = artists[r].strip()
-album_title = albums[r].strip()
+
+artists, albums, heard = read_csv(txtdir)
+artist_name, album_title = pick_rand(artists, albums, heard)
 
 artist = get_artist(artist_name)
 if artist:
@@ -109,15 +126,11 @@ if artist:
     if album:
         track_ids = get_track_ids(album)
         repopulate_playlist(username, playlist_id, track_ids)
-#        push = pb.push_note('Commutpy', 'Added: {} - {}'.format(artist_name,
-#                                                                album_title))
-        print('Added: {} - {}'.format(artist_name, album_title))
+        push = pb.push_note('Commutipy', 'Added: {} - {}'.format(artist_name,
+                            album_title))
     else:
-#        push = pb.push_note('Commutpy', 'Cannot find album: {} - {}'
-#                            .format(artist_name, album_title))
-        print('Cannot find album: {} - {}'.format(artist_name, album_title))
-
+        push = pb.push_note('Commutipy', 'Cannot find album: {} - {}'
+                            .format(artist_name, album_title))
 else:
-#    push = pb.push_note('Commutpy', 'Cannot find artist: {} - {}'
-#                        .format(artist_name, album_title))
-    print('Cannot find artist: {} - {}'.format(artist_name, album_title))
+    push = pb.push_note('Commutipy', 'Cannot find artist: {} - {}'
+                        .format(artist_name, album_title))
