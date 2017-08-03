@@ -1,9 +1,15 @@
+#!/usr/bin/python3
 # Commutipy
 # Ian Gomez, 08/02/17
 
 import spotipy
 import spotipy.util as util
+import random
 import keys
+import csv
+from pushbullet import Pushbullet
+pb = Pushbullet(keys.pbapi)
+
 
 ###############################################################################
 # Setup Spotify                                                               #
@@ -18,17 +24,10 @@ token = util.prompt_for_user_token(username, scope,
 sp = spotipy.Spotify(auth=token)
 sp.trace = False
 
+
 ###############################################################################
 # Helper Functions                                                            #
 ###############################################################################
-
-
-def show_tracks(tracks):
-    for i, item in enumerate(tracks['items']):
-        track = item['track']
-        print("%d %32.32s, %s" % (i, track['artists'][0]['name'],
-                                  track['name']))
-
 
 def delete_all_tracks(username, playlist_id, tracks):
     track_ids = []
@@ -79,18 +78,46 @@ def repopulate_playlist(username, playlist_id, track_ids):
     sp.user_playlist_add_tracks(username, playlist_id, track_ids)
 
 
+def to_bool(arg):
+    return int(arg) == 1
+
 ###############################################################################
 # Application                                                                 #
 ###############################################################################
 
-# open list and read
-# randomly select an album from a list
+txtdir = 'C:\\Users\\ME123\\Dropbox\\Python\\commutipy\\albums.txt'
+artists = []; albums = []; heard = []
+with open(txtdir, newline='') as csvfile:
+    reader = csv.reader(csvfile, delimiter=',')
+    next(reader)  # skip first line
+    for row in reader:
+        artists.append(row[0])
+        albums.append(row[1])
+        heard.append(row[2])
+
+r = random.randrange(len(artists))
+while(to_bool(heard[r])):
+    r = random.randrange(len(artists))
 
 playlist_id = '5FGOMBsm77sM3WjpdJeD1Z'
-name = 'Radiohead'
-album_title = 'In Rainbows'
+artist_name = artists[r].strip()
+album_title = albums[r].strip()
 
-artist = get_artist(name)
-album = get_album(artist, album_title)
-track_ids = get_track_ids(album)
-repopulate_playlist(username, playlist_id, track_ids)
+artist = get_artist(artist_name)
+if artist:
+    album = get_album(artist, album_title)
+    if album:
+        track_ids = get_track_ids(album)
+        repopulate_playlist(username, playlist_id, track_ids)
+#        push = pb.push_note('Commutpy', 'Added: {} - {}'.format(artist_name,
+#                                                                album_title))
+        print('Added: {} - {}'.format(artist_name, album_title))
+    else:
+#        push = pb.push_note('Commutpy', 'Cannot find album: {} - {}'
+#                            .format(artist_name, album_title))
+        print('Cannot find album: {} - {}'.format(artist_name, album_title))
+
+else:
+#    push = pb.push_note('Commutpy', 'Cannot find artist: {} - {}'
+#                        .format(artist_name, album_title))
+    print('Cannot find artist: {} - {}'.format(artist_name, album_title))
