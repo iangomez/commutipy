@@ -5,5 +5,4 @@ Automatically update a spotify playlist from a pool of specified albums using Sp
 
 To-do
 --------
-Randomly read an album from a text file
 Keep track of which albums were listened to completely (last.fm?)
