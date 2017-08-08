@@ -7,6 +7,7 @@ import spotipy.util as util
 import keys
 import csv
 import random
+import pandas
 from pushbullet import Pushbullet
 pb = Pushbullet(keys.pbapi)
 
@@ -86,7 +87,6 @@ def read_csv(txtdir):
     artists = []; albums = []; heard = []
     with open(txtdir, newline='') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
-        next(reader)  # skip first line
         for row in reader:
             artists.append(row[0])
             albums.append(row[1])
@@ -114,7 +114,7 @@ def record_listened(r):
 # Application                                                                 #
 ###############################################################################
 
-txtdir = 'C:\\Users\\ME123\\Dropbox\\Python\\commutipy\\albums.txt'
+txtdir = 'C:\\Users\\ME123\\Dropbox\\Python\\commutipy\\ian_albums.txt'
 playlist_id = '5FGOMBsm77sM3WjpdJeD1Z'
 
 artists, albums, heard = read_csv(txtdir)
