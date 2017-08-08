@@ -113,6 +113,7 @@ def record_listened(r):
 ###############################################################################
 # Application                                                                 #
 ###############################################################################
+system = sys.platform()
 
 txtdir = 'C:\\Users\\ME123\\Dropbox\\Python\\commutipy\\ian_albums.txt'
 playlist_id = '5FGOMBsm77sM3WjpdJeD1Z'
