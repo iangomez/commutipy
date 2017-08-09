@@ -8,7 +8,5 @@
 # pushbullet:  Optional; useful to debug when the script runs headless
 
 spotipy
-csv
-random
 pandas
 pushbullet.py

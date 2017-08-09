@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/home/ian/anaconda3/bin/python3.6
 # Commutipy
 # Ian Gomez, 08/02/17
 
@@ -8,6 +8,7 @@ import keys
 import csv
 import random
 import pandas
+import sys
 from pushbullet import Pushbullet
 pb = Pushbullet(keys.pbapi)
 
@@ -50,7 +51,7 @@ def get_artist(name):
 
 def get_album(artist, album_title):
     albums = []
-    results = sp.artist_albums(artist['id'], album_type='album')
+    results = sp.artist_albums(artist['id'], album_type='album', limit='50')
     for album in results:
         albums.extend(results['items'])
     seen = set()  # to avoid dups
@@ -113,14 +114,22 @@ def record_listened(r):
 ###############################################################################
 # Application                                                                 #
 ###############################################################################
-system = sys.platform()
 
-txtdir = 'C:\\Users\\ME123\\Dropbox\\Python\\commutipy\\ian_albums.txt'
+# Platform check
+s = sys.platform
+if s=='linux':
+	txtdir = '/home/ian/Dropbox/Python/commutipy/ian_albums.txt'
+elif s=='win32':
+	txtdir = 'C:\\Users\\ME123\\Dropbox\\Python\\commutipy\\ian_albums.txt'
+else:
+	raise EnvironmentError('Unsupported platform')
+
+# Gather album from the text file
 playlist_id = '5FGOMBsm77sM3WjpdJeD1Z'
-
 artists, albums, heard = read_csv(txtdir)
 artist_name, album_title = pick_rand(artists, albums, heard)
 
+# Search artist, get the specific album, populate the playlist with tracks
 artist = get_artist(artist_name)
 if artist:
     album = get_album(artist, album_title)
