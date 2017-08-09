@@ -3,6 +3,9 @@
 # for the artist and album in question
 # Ian Gomez, 08/08/17
 
+# TODO 
+# Use regex to suggest the closest album title; useful for remastered or deluxe
+
 import spotipy
 import spotipy.util as util
 import keys
@@ -37,9 +40,14 @@ def get_artist(name):
 def show_albums(artist, album_title):
     found = False
     albums = []
-    results = sp.artist_albums(artist['id'], album_type='album', limit='50')
-    for album in results:
+    album_types = ['album']
+    for type in album_types:
+        results = sp.artist_albums(artist['id'], album_type=type, limit='50')
         albums.extend(results['items'])
+        while(results['next']):
+            print('next')
+            results = sp.next(results)
+            albums.extend(results['items'])
     seen = set()  # to avoid dups
     albums.sort(key=lambda album: album['name'].lower())
     for album in albums:
@@ -54,17 +62,25 @@ def show_albums(artist, album_title):
 # Application                                                                 #
 ###############################################################################
 
-if len(sys.argv) > 1:
-	artist_name = sys.argv[1]
-	album_title = sys.argv[2]
+if len(sys.argv) > 1: 
+    info = ""
+    for arg in sys.argv[1:]:
+        info = '{} {}'.format(info,arg)
+    infolist = info.split(':') 
+    artist_name = infolist[0].strip()
+    album_title = infolist[1].strip()   
+
 else:
 	print('usage: check_spotify.py <artst> <album>')
 	sys.exit(2)
 
 artist = get_artist(artist_name)
-info = show_albums(artist,album_title)
-if info[1]:
+seen, found = show_albums(artist,album_title)
+if found:
 	print('{} - {} is in Spotify\'s library'.format(artist_name, album_title))
 else:
-	print('{} - {} is not in Spotify\'s library; try a manual lookup in Spotify'
-		.format(artist_name, album_title))
+    print('\n{} was not found'.format(album_title))
+    print('----------------------')
+    print('\nHere are the albums available:\n')
+    for album in seen:
+        print(album)

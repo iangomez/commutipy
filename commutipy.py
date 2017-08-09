@@ -53,10 +53,11 @@ def get_album(artist, album_title):
     albums = []
     album_types = ['album', 'compilation']
     for type in album_types:
-	    results = sp.artist_albums(artist['id'], album_type=type, limit='50')
-	    for album in results:
-	        albums.extend(results['items'])
-
+        results = sp.artist_albums(artist['id'], album_type=type, limit='50')
+        albums.extend(results['items'])
+        while(results['next']):  # helps with pagination
+            results = sp.next(results)
+            albums.extend(results['items'])
     seen = set()  # to avoid dups
     albums.sort(key=lambda album: album['name'].lower())
     for album in albums:
@@ -88,9 +89,11 @@ def to_bool(arg):
 
 
 def read_csv(txtdir):
-    artists = []; albums = []; heard = []
+    artists = []
+    albums = []
+    heard = []
     with open(txtdir, newline='') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
+        reader = csv.reader(csvfile, delimiter='\t')
         for row in reader:
             artists.append(row[0])
             albums.append(row[1])
@@ -120,12 +123,12 @@ def record_listened(r):
 
 # Platform check
 s = sys.platform
-if s=='linux':
-	txtdir = '/home/ian/Dropbox/Python/commutipy/ian_albums.txt'
-elif s=='win32':
-	txtdir = 'C:\\Users\\ME123\\Dropbox\\Python\\commutipy\\ian_albums.txt'
+if s == 'linux':
+    txtdir = '/home/ian/Dropbox/Python/commutipy/ian_albums.txt'
+elif s == 'win32':
+    txtdir = 'C:\\Users\\ME123\\Dropbox\\Python\\commutipy\\ian_albums.txt'
 else:
-	raise EnvironmentError('Unsupported platform')
+    raise EnvironmentError('Unsupported platform')
 
 # Gather album from the text file
 playlist_id = '5FGOMBsm77sM3WjpdJeD1Z'
