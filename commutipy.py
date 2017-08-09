@@ -3,9 +3,9 @@
 # Ian Gomez, 08/02/17
 
 import spotipy
+import spotipy.oauth2
 import spotipy.util as util
 import keys
-import csv
 import random
 import pandas
 import sys
@@ -17,13 +17,27 @@ pb = Pushbullet(keys.pbapi)
 # Setup Spotify                                                               #
 ###############################################################################
 
+# username = keys.username
+# scope = 'playlist-modify-public'
+# token = util.prompt_for_user_token(username, scope,
+#                                    client_id=keys.client_id,
+#                                    client_secret=keys.client_secret,
+#                                    redirect_uri=keys.redirect_uri)
+# sp = spotipy.Spotify(auth=token)
+# sp.trace = False
+
+# https://github.com/sheagcraig/actually_random/blob/master/actually_random.py
+
+auth_token = None
 username = keys.username
 scope = 'playlist-modify-public'
-token = util.prompt_for_user_token(username, scope,
-                                   client_id=keys.client_id,
-                                   client_secret=keys.client_secret,
-                                   redirect_uri=keys.redirect_uri)
-sp = spotipy.Spotify(auth=token)
+oauth = spotipy.oauth2.SpotifyOAuth(
+        keys.client_id, keys.client_secret, keys.redirect_uri, scope=scope,
+        cache_path=".tokens")
+token_info = oauth.get_cached_token()
+if not token_info and auth_token:
+    token_info = oauth.get_access_token(auth_token)
+sp = spotipy.Spotify(token_info["access_token"])
 sp.trace = False
 
 
@@ -88,30 +102,13 @@ def to_bool(arg):
     return int(arg) == 1
 
 
-def read_csv_old(txtdir):
-    artists = []
-    albums = []
-    heard = []
-    with open(txtdir, newline='') as csvfile:
-        reader = csv.reader(csvfile, delimiter='\t')
-        for row in reader:
-            artists.append(row[0])
-            albums.append(row[1])
-            heard.append(row[2])
-    return artists, albums, heard
-
-def pick_rand_old(artists, albums, heard):
-    r = random.randrange(len(artists))
-    while(to_bool(heard[r])):
-        r = random.randrange(len(artists))
-    artist_name = artists[r].strip()
-    album_title = albums[r].strip()
-    record_listened(r)
-    return artist_name, album_title
-
-
 def read_csv(txtdir):
     return pandas.read_csv(txtdir, sep='\t')  
+
+
+def write_csv(txtdir, df):
+    df.to_csv(txtdir, sep='\t')
+
     
 def pick_rand(txtdir, df):
     album_num = len(df['Album'])      
@@ -130,9 +127,6 @@ def pick_rand(txtdir, df):
     
     write_csv(txtdir, df)
     return artist_name, album_title
-
-def write_csv(txtdir, df):
-    df.to_csv(txtdir, sep='\t')
         
 
 ###############################################################################
@@ -141,47 +135,43 @@ def write_csv(txtdir, df):
 
 # Platform check
 s = sys.platform
+txtfile = 'test_albums.txt'
 if s == 'linux':
-    txtdir = '/home/ian/Dropbox/Python/commutipy/ian_albums.txt'
+    txtdir = '/home/ian/Dropbox/Python/commutipy/{}'.format(txtfile)
 elif s == 'win32':
-    txtdir = 'C:\\Users\\ME123\\Dropbox\\Python\\commutipy\\ian_albums.txt'
+    txtdir = 'C:\\Users\\ME123\\Dropbox\\Python\\commutipy\\{}'.format(txtfile)
 else:
     raise EnvironmentError('Unsupported platform')
 
-# Gather album from the text file
+# Gather random album from the text file
 playlist_id = '5FGOMBsm77sM3WjpdJeD1Z'
-
-
-
-
-
 df = read_csv(txtdir)
 artist_name, album_title = pick_rand(txtdir, df)
 
-# # Search artist, get the specific anitedlbum, populate the playlist with tracks
-# artist = get_artist(artist_name)
-# if artist:
-#     album = get_album(artist, album_title)
-#     if album:
-#         track_ids = get_track_ids(album)
-#         repopulate_playlist(username, playlist_id, track_ids)
-#         push = pb.push_note('Commutipy', 'Added: {} - {}'.format(artist_name,
-#                             album_title))
-#     else:
-#         push = pb.push_note('Commutipy', 'Cannot find album: {} - {}'
-#                             .format(artist_name, album_title))
-# else:
-#     push = pb.push_note('Commutipy', 'Cannot find artist: {} - {}'
-#                         .format(artist_name, album_title))
+# Search artist, get the specific album, populate the playlist with tracks
+artist = get_artist(artist_name)
+if artist:
+    album = get_album(artist, album_title)
+    if album:
+        track_ids = get_track_ids(album)
+        repopulate_playlist(username, playlist_id, track_ids)
+        push = pb.push_note('Commutipy', 'Added: {} - {}'.format(artist_name,
+                            album_title))
+    else:
+        push = pb.push_note('Commutipy', 'Cannot find album: {} - {}'
+                            .format(artist_name, album_title))
+else:
+    push = pb.push_note('Commutipy', 'Cannot find artist: {} - {}'
+                        .format(artist_name, album_title))
 
-# artist = get_artist(artist_name)
-# if artist:
-#     album = get_album(artist, album_title)
-#     if album:
-#         track_ids = get_track_ids(album)
-#         repopulate_playlist(username, playlist_id, track_ids)
-#         print('Added: {} - {}'.format(artist_name, album_title))
-#     else:
-#         print('Cannot find album: {} - {}'.format(artist_name, album_title))
-# else:
-#     print('Cannot find artist: {} - {}'.format(artist_name, album_title))
+#artist = get_artist(artist_name)
+#if artist:
+#    album = get_album(artist, album_title)
+#    if album:
+#        track_ids = get_track_ids(album)
+#        repopulate_playlist(username, playlist_id, track_ids)
+#        print('Added: {} - {}'.format(artist_name, album_title))
+#    else:
+#        print('Cannot find album: {} - {}'.format(artist_name, album_title))
+#else:
+#    print('Cannot find artist: {} - {}'.format(artist_name, album_title))
