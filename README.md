@@ -15,7 +15,7 @@ This project runs on Windows and Linux. The only platform specific item is the p
 3. Install dependencies 
 4. First run setup
 
-### Spotify Credententials
+### Spotify Credentials
 Register an application with Spotify to obtain `ClientID` and `ClientSecret`.
 [Link to Spotify application managment](https://developer.spotify.com/my-applications).
 Use `http://127.0.0.1` as your redirect uri (make sure to save if you do any modifications on your application page). Add this information to keys.py.
