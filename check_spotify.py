@@ -71,7 +71,7 @@ if len(sys.argv) > 1:
     album_title = infolist[1].strip()   
 
 else:
-	print('usage: check_spotify.py <artst> <album>')
+	print('usage: check_spotify.py <artst>: <album>')
 	sys.exit(2)
 
 artist = get_artist(artist_name)

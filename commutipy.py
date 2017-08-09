@@ -88,7 +88,7 @@ def to_bool(arg):
     return int(arg) == 1
 
 
-def read_csv(txtdir):
+def read_csv_old(txtdir):
     artists = []
     albums = []
     heard = []
@@ -100,8 +100,7 @@ def read_csv(txtdir):
             heard.append(row[2])
     return artists, albums, heard
 
-
-def pick_rand(artists, albums, heard):
+def pick_rand_old(artists, albums, heard):
     r = random.randrange(len(artists))
     while(to_bool(heard[r])):
         r = random.randrange(len(artists))
@@ -111,11 +110,30 @@ def pick_rand(artists, albums, heard):
     return artist_name, album_title
 
 
-def record_listened(r):
-    # use the random number to write to the csv that we listened to the album
-    # or use last.fm to confirm that we listened to the whole album before
-    # changing it to a new one
-    print()
+def read_csv(txtdir):
+    return pandas.read_csv(txtdir, sep='\t')  
+    
+def pick_rand(txtdir, df):
+    album_num = len(df['Album'])      
+    
+    # pick random entry that hasn't been heard
+    r = random.randrange(album_num)  
+    heard = df['Heard'][r]
+    while(to_bool(heard)):
+        r = random.randrange(album_num)
+        heard = df['Heard'][r]    
+    
+    # set artist & album and set heard
+    artist_name = df['Artist'][r]
+    album_title = df['Album'][r]
+    df.loc[r, 'Heard'] = 1            
+    
+    write_csv(txtdir, df)
+    return artist_name, album_title
+
+def write_csv(txtdir, df):
+    df.to_csv(txtdir, sep='\t')
+        
 
 ###############################################################################
 # Application                                                                 #
@@ -132,21 +150,38 @@ else:
 
 # Gather album from the text file
 playlist_id = '5FGOMBsm77sM3WjpdJeD1Z'
-artists, albums, heard = read_csv(txtdir)
-artist_name, album_title = pick_rand(artists, albums, heard)
 
-# Search artist, get the specific anitedlbum, populate the playlist with tracks
-artist = get_artist(artist_name)
-if artist:
-    album = get_album(artist, album_title)
-    if album:
-        track_ids = get_track_ids(album)
-        repopulate_playlist(username, playlist_id, track_ids)
-        push = pb.push_note('Commutipy', 'Added: {} - {}'.format(artist_name,
-                            album_title))
-    else:
-        push = pb.push_note('Commutipy', 'Cannot find album: {} - {}'
-                            .format(artist_name, album_title))
-else:
-    push = pb.push_note('Commutipy', 'Cannot find artist: {} - {}'
-                        .format(artist_name, album_title))
+
+
+
+
+df = read_csv(txtdir)
+artist_name, album_title = pick_rand(txtdir, df)
+
+# # Search artist, get the specific anitedlbum, populate the playlist with tracks
+# artist = get_artist(artist_name)
+# if artist:
+#     album = get_album(artist, album_title)
+#     if album:
+#         track_ids = get_track_ids(album)
+#         repopulate_playlist(username, playlist_id, track_ids)
+#         push = pb.push_note('Commutipy', 'Added: {} - {}'.format(artist_name,
+#                             album_title))
+#     else:
+#         push = pb.push_note('Commutipy', 'Cannot find album: {} - {}'
+#                             .format(artist_name, album_title))
+# else:
+#     push = pb.push_note('Commutipy', 'Cannot find artist: {} - {}'
+#                         .format(artist_name, album_title))
+
+# artist = get_artist(artist_name)
+# if artist:
+#     album = get_album(artist, album_title)
+#     if album:
+#         track_ids = get_track_ids(album)
+#         repopulate_playlist(username, playlist_id, track_ids)
+#         print('Added: {} - {}'.format(artist_name, album_title))
+#     else:
+#         print('Cannot find album: {} - {}'.format(artist_name, album_title))
+# else:
+#     print('Cannot find artist: {} - {}'.format(artist_name, album_title))
