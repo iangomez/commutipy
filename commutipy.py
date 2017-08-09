@@ -17,28 +17,28 @@ pb = Pushbullet(keys.pbapi)
 # Setup Spotify                                                               #
 ###############################################################################
 
-# username = keys.username
-# scope = 'playlist-modify-public'
-# token = util.prompt_for_user_token(username, scope,
-#                                    client_id=keys.client_id,
-#                                    client_secret=keys.client_secret,
-#                                    redirect_uri=keys.redirect_uri)
-# sp = spotipy.Spotify(auth=token)
-# sp.trace = False
-
-# https://github.com/sheagcraig/actually_random/blob/master/actually_random.py
-
-auth_token = None
 username = keys.username
 scope = 'playlist-modify-public'
-oauth = spotipy.oauth2.SpotifyOAuth(
-        keys.client_id, keys.client_secret, keys.redirect_uri, scope=scope,
-        cache_path=".tokens")
-token_info = oauth.get_cached_token()
-if not token_info and auth_token:
-    token_info = oauth.get_access_token(auth_token)
-sp = spotipy.Spotify(token_info["access_token"])
+token = util.prompt_for_user_token(username, scope,
+                                   client_id=keys.client_id,
+                                   client_secret=keys.client_secret,
+                                   redirect_uri=keys.redirect_uri)
+sp = spotipy.Spotify(auth=token)
 sp.trace = False
+
+# attempt to avoid user interaction
+# https://github.com/sheagcraig/actually_random/blob/master/actually_random.py
+# auth_token = None
+# username = keys.username
+# scope = 'playlist-modify-public'
+# oauth = spotipy.oauth2.SpotifyOAuth(
+#         keys.client_id, keys.client_secret, keys.redirect_uri, scope=scope,
+#         cache_path=".tokens")
+# token_info = oauth.get_cached_token()
+# if not token_info and auth_token:
+#     token_info = oauth.get_access_token(auth_token)
+# sp = spotipy.Spotify(token_info["access_token"])
+# sp.trace = False
 
 
 ###############################################################################
