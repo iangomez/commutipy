@@ -51,9 +51,12 @@ def get_artist(name):
 
 def get_album(artist, album_title):
     albums = []
-    results = sp.artist_albums(artist['id'], album_type='album', limit='50')
-    for album in results:
-        albums.extend(results['items'])
+    album_types = ['album', 'compilation']
+    for type in album_types:
+	    results = sp.artist_albums(artist['id'], album_type=type, limit='50')
+	    for album in results:
+	        albums.extend(results['items'])
+
     seen = set()  # to avoid dups
     albums.sort(key=lambda album: album['name'].lower())
     for album in albums:
@@ -109,7 +112,7 @@ def record_listened(r):
     # use the random number to write to the csv that we listened to the album
     # or use last.fm to confirm that we listened to the whole album before
     # changing it to a new one
-    print('?')
+    print()
 
 ###############################################################################
 # Application                                                                 #
@@ -129,7 +132,7 @@ playlist_id = '5FGOMBsm77sM3WjpdJeD1Z'
 artists, albums, heard = read_csv(txtdir)
 artist_name, album_title = pick_rand(artists, albums, heard)
 
-# Search artist, get the specific album, populate the playlist with tracks
+# Search artist, get the specific anitedlbum, populate the playlist with tracks
 artist = get_artist(artist_name)
 if artist:
     album = get_album(artist, album_title)

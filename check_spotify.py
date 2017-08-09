@@ -1,6 +1,6 @@
 #!/home/ian/anaconda3/bin/python3.6
 # Check Spotify
-# for the artist and alubm in question
+# for the artist and album in question
 # Ian Gomez, 08/08/17
 
 import spotipy
@@ -54,18 +54,17 @@ def show_albums(artist, album_title):
 # Application                                                                 #
 ###############################################################################
 
-# Platform check
-s = sys.platform
-if s=='linux':
-	txtdir = '/home/ian/Dropbox/Python/commutipy/ian_albums.txt'
-elif s=='win32':
-	txtdir = 'C:\\Users\\ME123\\Dropbox\\Python\\commutipy\\ian_albums.txt'
+if len(sys.argv) > 1:
+	artist_name = sys.argv[1]
+	album_title = sys.argv[2]
 else:
-	raise EnvironmentError('Unsupported platform')
-
-artist_name = 'Led Zeppelin'
-album_title = 'Led Zeppelin (Remastered)'
+	print('usage: check_spotify.py <artst> <album>')
+	sys.exit(2)
 
 artist = get_artist(artist_name)
-albums = show_albums(artist,album_title)
-print(albums)
+info = show_albums(artist,album_title)
+if info[1]:
+	print('{} - {} is in Spotify\'s library'.format(artist_name, album_title))
+else:
+	print('{} - {} is not in Spotify\'s library; try a manual lookup in Spotify'
+		.format(artist_name, album_title))
