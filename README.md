@@ -14,6 +14,7 @@ This project runs on Windows and Linux. The only platform specific item is the p
 2. Get pushbullet credentials (`pubapi`)
 3. Install dependencies 
 4. First run setup
+5. Schedule
 
 ### Spotify Credentials
 Register an application with Spotify to obtain `ClientID` and `ClientSecret`.
@@ -35,6 +36,9 @@ Make sure to get the uri of the playlist you want to edit. Go to Spotify, share 
 
 
 The Spotify instance will ask for a url containing the authorization code ([read the docs to understand the flow](https://spotipy.readthedocs.io/en/latest/#authorization-code-flow)), copy & paste that back into your console, and it should work. 
+
+### Schedule 
+Use cron on Linux to run it on a daily interval. Or use the Windows Task Scheduler.
 
 ## To-do
 Keep track of which albums were listened to completely (last.fm api?)
