@@ -118,7 +118,7 @@ def pick_rand(txtdir, df):
 ###############################################################################
 
 # Specify the name of the text file (tab delimited csv)
-txtfile = 'test_albums.txt'
+txtfile = 'ian_albums.txt'
 
 # Specify playlist id
 playlist_id = '5FGOMBsm77sM3WjpdJeD1Z'
@@ -144,10 +144,9 @@ if artist:
         track_ids = get_track_ids(album)
         repopulate_playlist(username, playlist_id, track_ids)
         print('Added: {} - {}'.format(artist_name, album_title))
-        
-        # push = pb.push_note('Commutipy', 'Added: {} - {}'.format(artist_name,
-        #                     album_title))
+        #push = pbapi.push_note('Commutipy', 'Added: {} - {}'.format(artist_name,
+        #                       album_title))
     else:
-		print('Cannot find album: {} - {}'.format(artist_name, album_title))
+        print('Cannot find album: {} - {}'.format(artist_name, album_title))
 else:
-	print('Cannot find artist: {} - {}'.format(artist_name, album_title))
+    print('Cannot find artist: {} - {}'.format(artist_name, album_title))
