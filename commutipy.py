@@ -9,8 +9,8 @@ import keys
 import random
 import pandas
 import sys
-from pushbullet import Pushbullet
-pb = Pushbullet(keys.pbapi)
+# from pushbullet import Pushbullet
+# pb = Pushbullet(keys.pbapi)
 
 
 ###############################################################################
@@ -25,21 +25,6 @@ token = util.prompt_for_user_token(username, scope,
                                    redirect_uri=keys.redirect_uri)
 sp = spotipy.Spotify(auth=token)
 sp.trace = False
-
-# attempt to avoid user interaction
-# https://github.com/sheagcraig/actually_random/blob/master/actually_random.py
-# auth_token = None
-# username = keys.username
-# scope = 'playlist-modify-public'
-# oauth = spotipy.oauth2.SpotifyOAuth(
-#         keys.client_id, keys.client_secret, keys.redirect_uri, scope=scope,
-#         cache_path=".tokens")
-# token_info = oauth.get_cached_token()
-# if not token_info and auth_token:
-#     token_info = oauth.get_access_token(auth_token)
-# sp = spotipy.Spotify(token_info["access_token"])
-# sp.trace = False
-
 
 ###############################################################################
 # Helper Functions                                                            #
@@ -155,23 +140,11 @@ if artist:
     if album:
         track_ids = get_track_ids(album)
         repopulate_playlist(username, playlist_id, track_ids)
-        push = pb.push_note('Commutipy', 'Added: {} - {}'.format(artist_name,
-                            album_title))
+        print('Added: {} - {}'.format(artist_name, album_title))
+        
+        # push = pb.push_note('Commutipy', 'Added: {} - {}'.format(artist_name,
+        #                     album_title))
     else:
-        push = pb.push_note('Commutipy', 'Cannot find album: {} - {}'
-                            .format(artist_name, album_title))
+		print('Cannot find album: {} - {}'.format(artist_name, album_title))
 else:
-    push = pb.push_note('Commutipy', 'Cannot find artist: {} - {}'
-                        .format(artist_name, album_title))
-
-#artist = get_artist(artist_name)
-#if artist:
-#    album = get_album(artist, album_title)
-#    if album:
-#        track_ids = get_track_ids(album)
-#        repopulate_playlist(username, playlist_id, track_ids)
-#        print('Added: {} - {}'.format(artist_name, album_title))
-#    else:
-#        print('Cannot find album: {} - {}'.format(artist_name, album_title))
-#else:
-#    print('Cannot find artist: {} - {}'.format(artist_name, album_title))
+	print('Cannot find artist: {} - {}'.format(artist_name, album_title))
