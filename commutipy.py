@@ -61,9 +61,9 @@ def get_album(artist, album_title):
     albums.sort(key=lambda album: album['name'].lower())
     for album in albums:
         name = album['name']
-        if name not in seen:
+        if name not in seen:   
             seen.add(name)
-            if album_title.lower() == name.lower():
+            if album_title.lower() == name.lower():  # check for a match
                 album_id = album['id']
                 return sp.album(album_id)
     return None
@@ -84,7 +84,7 @@ def repopulate_playlist(username, playlist_id, track_ids):
 
 
 def to_bool(arg):
-    return int(arg) == 1
+    return int(arg) == 1  # interprets the 0 or 1 in heard as True or False
 
 
 def read_csv(txtdir):
@@ -96,7 +96,7 @@ def write_csv(txtdir, df):
 
     
 def pick_rand(txtdir, df):
-    album_num = len(df['Album'])      
+    album_num = len(df['Album'])  # get number of albums in the file      
     
     # pick random entry that hasn't been heard
     r = random.randrange(album_num)  
@@ -118,18 +118,22 @@ def pick_rand(txtdir, df):
 # Application                                                                 #
 ###############################################################################
 
-# Platform check
-s = sys.platform
+# Specify the name of the text file (tab delimited csv)
 txtfile = 'test_albums.txt'
-if s == 'linux':
+
+# Specify playlist id
+playlist_id = '5FGOMBsm77sM3WjpdJeD1Z'
+
+# Platform check and directory
+# Change the directory to your own
+if sys.platform == 'linux':
     txtdir = '/home/ian/Dropbox/Python/commutipy/{}'.format(txtfile)
-elif s == 'win32':
+elif sys.platform == 'win32':
     txtdir = 'C:\\Users\\ME123\\Dropbox\\Python\\commutipy\\{}'.format(txtfile)
 else:
     raise EnvironmentError('Unsupported platform')
 
 # Gather random album from the text file
-playlist_id = '5FGOMBsm77sM3WjpdJeD1Z'
 df = read_csv(txtdir)
 artist_name, album_title = pick_rand(txtdir, df)
 
