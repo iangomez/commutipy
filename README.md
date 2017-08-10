@@ -24,6 +24,8 @@ Use `http://127.0.0.1` as your redirect uri (make sure to save if you do any mod
 ### Pusbullet Credentials
 If you want to use Pushbullet, you must also obtain an api key. Go to [Pushbullet's settings](https://www.pushbullet.com/#settings/account) and request a token. (You can remove the pushbullet calls to avoid using Pusbullet.) Add this information to keys.py.
 
+**Only one Pushbullet call is made. Every call and import to Pushbullet is currently commented out in the code**
+
 ### Dependencies
 `pip install -r requirements.txt` installs the required dependencies. 
 
