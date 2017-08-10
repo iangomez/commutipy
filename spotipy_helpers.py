@@ -1,5 +1,3 @@
-
-
 def delete_all_tracks(sp, username, playlist_id, tracks):
     track_ids = []
     for item in tracks['items']:
@@ -31,7 +29,7 @@ def get_album(sp, artist, album_title):
     albums.sort(key=lambda album: album['name'].lower())
     for album in albums:
         name = album['name']
-        if name not in seen:   
+        if name not in seen:
             seen.add(name)
             if album_title.lower() == name.lower():  # check for a match
                 album_id = album['id']
@@ -49,5 +47,5 @@ def get_track_ids(sp, album):
 def repopulate_playlist(sp, username, playlist_id, track_ids):
     playlist = sp.user_playlist(username, playlist_id=playlist_id)
     tracks = playlist['tracks']
-    delete_all_tracks(username, playlist_id, tracks)
+    delete_all_tracks(sp, username, playlist_id, tracks)
     sp.user_playlist_add_tracks(username, playlist_id, track_ids)
