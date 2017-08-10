@@ -3,7 +3,6 @@
 # Ian Gomez, 08/02/17
 
 import spotipy
-import spotipy.oauth2
 import spotipy.util as util
 import keys
 import random
