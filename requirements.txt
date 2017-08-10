@@ -1,12 +1,5 @@
 # Requirements for commutipy
 # Ian Gomez, 08/03/17
 
-# spotipy: wraps Spotify API for easy python use
-# csv:     For use in storing album names and artists
-# random:  For choosing random lines in csv
-# pandas:  For ease of modifying csv
-# pushbullet:  Optional; useful to debug when the script runs headless
-
-spotipy
-pandas
-pushbullet.py
+spotipy  # wraps Spotify API for easy python use
+pandas   # For ease of modifying csv
