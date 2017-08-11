@@ -1,4 +1,4 @@
-#!/home/ian/anaconda3/bin/python3.6
+#!/usr/bin/python3
 # Commutipy
 # Ian Gomez, 08/02/17
 
@@ -27,7 +27,7 @@ sp.trace = False
 
 # Specify the name of the text file (tab delimited csv) & playlist id
 txtfile = 'ian_albums.txt'
-txtdir = '/home/ian/Dropbox/Python/commutipy/{}'.format(txtfile)
+txtdir = '/home/ian/Dropbox/Python/commutipy-prod/{}'.format(txtfile)
 playlist_id = '5FGOMBsm77sM3WjpdJeD1Z'
 
 # Gather random album from the text file
