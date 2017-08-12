@@ -1,58 +1,59 @@
 import random
 import pandas
+import datetime
 
 def to_bool(arg):
-    """
-    Change the value 1 or 0 to True/False
+	"""
+	Change the value 1 or 0 to True/False
 
-    Args:
-        arg (int): the truth value
+	Args:
+		arg (int): the truth value
 
-    Returns:
-    	returns a boolean
-    """
+	Returns:
+		returns a boolean
+	"""
 	return int(arg) == 1  # interprets the 0 or 1 in heard as True or False
 
 
 def read_csv(path):
-    """
-    Opens a csv and reads the contents into a dataframe.
+	"""
+	Opens a csv and reads the contents into a dataframe.
 
-    Args:
-        txtdir (str): the path to the csv
+	Args:
+		txtdir (str): the path to the csv
 
-    Returns:
-        returns a pandas dataframe of the csv data
-    """
+	Returns:
+		returns a pandas dataframe of the csv data
+	"""
 	return pandas.read_csv(path, sep='\t')
 
 
 def write_csv(txtdir, df):
-    """
-    Opens the csv and writes the contents from a dataframe.
+	"""
+	Opens the csv and writes the contents from a dataframe.
 
-    Args:
-    	txtdir (str): the path to the csv
+	Args:
+		txtdir (str): the path to the csv
 		df (dataframe): a pandas dataframe
 
-    Returns:
+	Returns:
 		returns None
-    """
+	"""
 	df.to_csv(txtdir, index=False, sep='\t')
 
 
 def pick_rand(txtdir, df):
-    """
-    Chooses a random number and uses that as an index to find the next album.
-	Once chosen, it sets the heard property to True in the csv
+	"""
+	Chooses a random number and uses that as an index to find the next album.
+	Once chosen, it sets the heard property to True in the csv and sets the date
 
-    Args:
-    	txtdir (str): the path to the csv
+	Args:
+		txtdir (str): the path to the csv
 		df (dataframe): a pandas dataframe
 
-    Returns:
+	Returns:
 		returns artist name and album title
-    """
+	"""
 	album_num = len(df['Album'])  # get number of albums in the file
 
 	# pick random entry that hasn't been heard
@@ -66,6 +67,7 @@ def pick_rand(txtdir, df):
 	artist_name = df['Artist'][r]
 	album_title = df['Album'][r]
 	df.loc[r, 'Heard'] = 1
+	df.loc[r, 'Date'] = str(datetime.date.today())
 
 	write_csv(txtdir, df)
 	return artist_name, album_title
