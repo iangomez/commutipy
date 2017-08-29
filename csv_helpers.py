@@ -28,7 +28,7 @@ def read_csv(path):
 	df = pandas.read_csv(path, sep='\t')
 	df['Artist'] = df['Artist'].str.strip()
 	df['Album']  = df['Album'].str.strip()
-	return
+	return df
 
 
 def write_csv(txtdir, df):
