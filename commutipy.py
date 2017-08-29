@@ -35,9 +35,20 @@ for txtfile, playlist_id in zip(txtfiles, playlist_ids):
 	# Gather random album from the text file
 	df = csvh.read_csv(txtdir)
 	artist_name, album_title = csvh.pick_rand(txtdir, df)
+	artist = sph.get_artist(sp, artist_name)
+
+	if artist is not None:
+		seen, found = sph.show_albums(sp,artist,album_title)
+		if found:
+			print('{} - {} is in Spotify\'s library'.format(artist_name, album_title))
+		else:
+		    print('\n{} was not found'.format(album_title))
+		    print('----------------------')
+		    print('\nHere are the albums available:\n')
+		    for album in seen:
+		        print(album)
 
 	# Search artist, get the specific album, populate the playlist with tracks
-	artist = sph.get_artist(sp, artist_name)
 	if artist:
 		album = sph.get_album(sp, artist, album_title)
 		if album:

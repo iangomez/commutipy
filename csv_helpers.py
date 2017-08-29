@@ -55,8 +55,8 @@ def pick_rand(txtdir, df):
 	Returns:
 		returns artist name and album title
 	"""
-	if 0 in df['Heard']:
 
+	if 0 in df['Heard'].values:
 		album_num = len(df['Album'])  # get number of albums in the file
 
 		# pick random entry that hasn't been heard
