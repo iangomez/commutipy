@@ -34,6 +34,7 @@ The Spotify instance will ask for a url containing the authorization code ([read
 
 ### Schedule
 Use cron on Linux to run it on a daily interval. Or use the Windows Task Scheduler.
+If running headless on a raspberry pi for instance, make sure to cd into the folder that has your cached token. Otherwise the job won't work.
 
 ## To-do
 Keep track of which albums were listened to completely (last.fm api?)
