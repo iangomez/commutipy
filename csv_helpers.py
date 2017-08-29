@@ -17,7 +17,7 @@ def to_bool(arg):
 
 def read_csv(path):
 	"""
-	Opens a csv and reads the contents into a dataframe.
+	Opens a csv and reads the contents into a dataframe. Strip all strings
 
 	Args:
 		txtdir (str): the path to the csv
@@ -25,7 +25,10 @@ def read_csv(path):
 	Returns:
 		returns a pandas dataframe of the csv data
 	"""
-	return pandas.read_csv(path, sep='\t')
+	df = pandas.read_csv(path, sep='\t')
+	df['Artist'] = df['Artist'].str.strip()
+	df['Album']  = df['Album'].str.strip()
+	return
 
 
 def write_csv(txtdir, df):
