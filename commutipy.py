@@ -26,11 +26,10 @@ sp.trace = False
 ###############################################################################
 
 # Specify the name of the text file (tab delimited csv) & playlist id
-txtfiles = ['ian_albums.txt']
-playlist_ids = ['5FGOMBsm77sM3WjpdJeD1Z']
+txtfiles = ['ian_albums.txt', 'ruqayya_albums.txt']
+playlist_ids = ['5FGOMBsm77sM3WjpdJeD1Z','6R2BOuKmqyUjQ9qaPPbATH']
 
 for txtfile, playlist_id in zip(txtfiles, playlist_ids):
-	print(txtfile, playlist_id)
 	txtdir = '/home/ian/Dropbox/Python/commutipy-prod/{}'.format(txtfile)
 
 	# Gather random album from the text file

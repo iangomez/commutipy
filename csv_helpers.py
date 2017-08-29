@@ -45,7 +45,8 @@ def write_csv(txtdir, df):
 def pick_rand(txtdir, df):
 	"""
 	Chooses a random number and uses that as an index to find the next album.
-	Once chosen, it sets the heard property to True in the csv and sets the date
+	Once chosen, it sets the heard property to True in the csv. If all albums
+	are heard, it will return "No unheard albums"
 
 	Args:
 		txtdir (str): the path to the csv
@@ -54,7 +55,7 @@ def pick_rand(txtdir, df):
 	Returns:
 		returns artist name and album title
 	"""
-	if '0' in df['Heard']:
+	if 0 in df['Heard']:
 
 		album_num = len(df['Album'])  # get number of albums in the file
 
