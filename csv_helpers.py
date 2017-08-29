@@ -54,20 +54,24 @@ def pick_rand(txtdir, df):
 	Returns:
 		returns artist name and album title
 	"""
-	album_num = len(df['Album'])  # get number of albums in the file
+	if '0' in df['Heard']:
 
-	# pick random entry that hasn't been heard
-	r = random.randrange(album_num)
-	heard = df['Heard'][r]
-	while(to_bool(heard)):
+		album_num = len(df['Album'])  # get number of albums in the file
+
+		# pick random entry that hasn't been heard
 		r = random.randrange(album_num)
 		heard = df['Heard'][r]
+		while(to_bool(heard)):
+			r = random.randrange(album_num)
+			heard = df['Heard'][r]
 
-	# set artist & album and set heard
-	artist_name = df['Artist'][r]
-	album_title = df['Album'][r]
-	df.loc[r, 'Heard'] = 1
-	df.loc[r, 'Date'] = str(datetime.date.today())
+		# set artist & album and set heard
+		artist_name = df['Artist'][r]
+		album_title = df['Album'][r]
+		df.loc[r, 'Heard'] = 1
+		df.loc[r, 'Date'] = str(datetime.date.today())
 
-	write_csv(txtdir, df)
-	return artist_name, album_title
+		write_csv(txtdir, df)
+		return artist_name, album_title
+	else:
+		return "No unheard artists", 'No unheard albums'

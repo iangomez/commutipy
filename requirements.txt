@@ -3,3 +3,4 @@
 
 spotipy  # wraps Spotify API for easy python use
 pandas   # For ease of modifying csv
+pylast   # For lastfm api
