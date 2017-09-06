@@ -1,3 +1,5 @@
 .cache-*
 ikeys.py
+keys.py
 __pycache__
+tests

@@ -6,7 +6,7 @@ import spotipy
 import spotipy.util as util
 import spotipy_helpers as sph
 import csv_helpers as csvh
-import ikeys as keys  # change to import keys
+import keys
 
 ###############################################################################
 # Setup Spotify                                                               #
