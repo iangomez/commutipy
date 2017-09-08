@@ -4,19 +4,19 @@ This module houses all the Spotipy helper functions.
 
 """
 
-def get_artist(sp, name):
+def get_artist(sp, artist_name):
 	"""
 	Get the first result of an artist search given a Spotify instance and name.
 
 	Args:
 		sp (Spotify instance): an authorized instance
-		name (str): name of the artist
+		artist_name (str): name of the artist
 
 	Returns:
 		returns a Spotify artist json object
 			if there is no artist found, returns None
 	"""
-	results = sp.search(q='artist:' + name, type='artist')
+	results = sp.search(q='artist:' + artist_name, type='artist')
 	items = results['artists']['items']
 	if len(items) > 0:
 		return items[0]

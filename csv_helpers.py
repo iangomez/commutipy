@@ -31,6 +31,13 @@ def read_csv(path):
 	return df
 
 
+def append_csv(df, artist_name, album_title):
+	df_add = (pandas.DataFrame([[artist_name, album_title, 0]],
+		columns=['Artist', 'Album', 'Heard']))
+	df = pandas.concat([df, df_add], ignore_index=True)
+	return df
+
+
 def write_csv(txtdir, df):
 	"""
 	Opens the csv and writes the contents from a dataframe.
