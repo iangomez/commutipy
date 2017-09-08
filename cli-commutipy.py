@@ -84,9 +84,10 @@ while(1):
 			break
 
 		artist = sph.get_artist(sp, search_artist)
+		artist_name = artist['name']
 		if artist is not None:
 			seen, found = sph.show_albums(sp, artist, '')
-			print('\nHere are the albums available:')
+			print('\nHere are the albums available from {}:'.format(artist_name))
 
 			ordered_seen = []
 			for i, album in enumerate(seen):
@@ -98,9 +99,9 @@ while(1):
 			else:
 				# write the selected album and artist into the txt file
 				album_name = ordered_seen[int(number)]
-				df = csvh.append_csv(df, search_artist, album_name)
+				df = csvh.append_csv(df, artist_name, album_name)
 				csvh.write_csv(txtdir, df)
-				print('{} - {} added to csv\n'.format(search_artist, album_name))
+				print('{} - {} added to csv\n'.format(artist_name, album_name))
 				print(df)
 
 		else:
