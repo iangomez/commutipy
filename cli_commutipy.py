@@ -2,6 +2,8 @@
 # Commutipy Status Check
 # Ian Gomez, 09/02/17
 
+import os
+import sys
 import spotipy
 import spotipy.util as util
 import spotipy_helpers as sph
@@ -30,7 +32,12 @@ for playlist_id, txtfile in zip(playlist_ids, txtfiles):
 	playlist_names.append(playlist_name)
 	album_name = playlist['tracks']['items'][0]['track']['album']['name']
 	artist_name = playlist['tracks']['items'][0]['track']['artists'][0]['name']
-	txtdir = '/home/ian/Dropbox/Python/commutipy-prod/{}'.format(txtfile)
+	if sys.platform == 'win32':
+		txtdir = ('C:'+ os.sep + 'Users' + os.sep + 'ME123' + os.sep + 'Dropbox'
+					+ os.sep + 'Python' + os.sep + 'commutipy-prod' + os.sep +
+					'{}'.format(txtfile))
+	else:
+		txtdir = '/home/ian/Dropbox/Python/commutipy-prod/{}'.format(txtfile)
 
 	# csv reading. grabs unheard albums and places them in a list
 	unheard_albums = []
@@ -70,7 +77,12 @@ while(1):
 
 	if select_playlist < len(playlist_names):
 		txtfile = txtfiles[select_playlist]
-		txtdir = '/home/ian/Dropbox/Python/commutipy-prod/{}'.format(txtfile)
+		if sys.platform == 'win32':
+			txtdir = ('C:'+ os.sep + 'Users' + os.sep + 'ME123' + os.sep + 'Dropbox'
+						+ os.sep + 'Python' + os.sep + 'commutipy-prod' + os.sep +
+						'{}'.format(txtfile))
+		else:
+			txtdir = '/home/ian/Dropbox/Python/commutipy-prod/{}'.format(txtfile)
 		df = csvh.read_csv(txtdir)
 
 	else:
